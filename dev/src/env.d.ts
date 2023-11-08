@@ -1,3 +1,3 @@
-// the following command adds the type for module.hot
-
+/// <reference types="webpack" />
 /// <reference types="webpack/module" />
+/// <reference types="webpack-dev-server" />

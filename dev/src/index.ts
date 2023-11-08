@@ -1,15 +1,24 @@
-declare global {
-  interface Window {
-    gradio_config?: any
-  }
-}
+// declare global {
+//   interface Window {
+//     gradio_config?: any
+//   }
+// }
 
 async function main() {
-  if (unsafeWindow.gradio_config?.title !== "Stable Diffusion") {
+  if (location.host !== "localhost:8080") {
     return
   }
+  // if (unsafeWindow.gradio_config?.title !== "Stable Diffusion") {
+  //   return
+  // }
 
-  console.log("running")
+  if (location.pathname.includes("page.html")) {
+    await import("./page/page")
+  } else {
+    await import("./host/host")
+  }
 }
 
-void main()
+main().catch(console.warn)
+
+module.hot?.monkeyReload()
