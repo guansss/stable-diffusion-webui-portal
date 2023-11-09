@@ -2,13 +2,14 @@ import { createBirpc } from "birpc"
 import { Simplify } from "type-fest"
 import { ClientFunctions } from "../page/page-rpc"
 import { ignoreError, isBirpcTimeoutError } from "../utils/error"
-import { updatePageImage } from "./image"
+import { sendImage, sendLivePreview } from "./image"
 
 // using a class since decorators can only be used in classes (currently)
 const serverFunctions = new (class {
   @ignoreError(isBirpcTimeoutError)
   async initPage() {
-    await updatePageImage()
+    await sendImage()
+    await sendLivePreview()
   }
 })()
 

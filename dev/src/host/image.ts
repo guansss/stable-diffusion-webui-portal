@@ -2,6 +2,7 @@ import { isBirpcTimeoutError } from "../utils/error"
 import { hostRpc } from "./host-rpc"
 
 let currentVisibleImageElement: HTMLImageElement | undefined
+let currentLivePreview: string | undefined
 
 function watchImages() {
   const galleryImages = gradioApp().querySelectorAll(
@@ -14,7 +15,7 @@ function watchImages() {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         currentVisibleImageElement = entry.target as HTMLImageElement
-        void updatePageImage()
+        void sendImage()
       }
     })
   })
@@ -22,7 +23,7 @@ function watchImages() {
   galleryImages.forEach((img) => visibilityObserver.observe(img))
 
   const srcObserver = new MutationObserver(() => {
-    void updatePageImage()
+    void sendImage()
   })
 
   galleryImages.forEach((img) =>
@@ -38,23 +39,75 @@ function watchImages() {
   })
 }
 
-export async function updatePageImage() {
-  if (currentVisibleImageElement?.src) {
-    try {
-      await hostRpc.setAtom({
-        image: {
-          url: currentVisibleImageElement.src,
-        },
+function watchLivePreviews() {
+  const galleries = [
+    document.getElementById("txt2img_gallery"),
+    document.getElementById("img2img_gallery"),
+  ].filter(Boolean) as HTMLDivElement[]
+
+  const insertionObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node instanceof HTMLElement && node.classList.contains("livePreview")) {
+          insertionObserver.observe(node, { childList: true })
+        } else if (
+          node instanceof HTMLImageElement &&
+          node.parentElement?.classList.contains("livePreview")
+        ) {
+          currentLivePreview = node.src
+          void sendLivePreview()
+        }
       })
-    } catch (e) {
-      if (!isBirpcTimeoutError(e)) {
-        // TODO: toast the error
-      }
+    })
+  })
+
+  galleries.forEach((gallery) => {
+    insertionObserver.observe(gallery, { childList: true })
+  })
+
+  module.hot?.dispose(() => {
+    insertionObserver.disconnect()
+  })
+}
+
+export async function sendLivePreview() {
+  if (!currentLivePreview) {
+    return
+  }
+
+  try {
+    await hostRpc.setAtom({
+      livePreviews: {
+        url: currentLivePreview,
+      },
+    })
+  } catch (e) {
+    if (!isBirpcTimeoutError(e)) {
+      // TODO: toast the error
+    }
+  }
+}
+
+export async function sendImage() {
+  if (!currentVisibleImageElement?.src) {
+    return
+  }
+
+  try {
+    await hostRpc.setAtom({
+      image: {
+        url: currentVisibleImageElement.src,
+      },
+    })
+  } catch (e) {
+    if (!isBirpcTimeoutError(e)) {
+      // TODO: toast the error
     }
   }
 }
 
 watchImages()
+watchLivePreviews()
 
 module.hot?.dispose(() => {
   currentVisibleImageElement = undefined

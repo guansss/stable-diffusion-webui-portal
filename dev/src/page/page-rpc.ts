@@ -1,13 +1,13 @@
 import { createBirpc } from "birpc"
 import { getDefaultStore } from "jotai"
 import { ServerFunctions } from "../host/host-rpc"
-import { AtomValues, atoms } from "./store"
+import { AtomArgs, atoms } from "./store"
 
 const clientFunctions = {
-  async setAtom<T extends AtomValues>(values: T) {
+  async setAtom<K extends keyof AtomArgs>(values: { [P in K]: AtomArgs[P] }) {
     for (const key in values) {
       if (atoms.hasOwnProperty(key)) {
-        getDefaultStore().set(atoms[key as keyof AtomValues], values[key] as IKnowWhatIAmDoing)
+        getDefaultStore().set(atoms[key] as IKnowWhatIAmDoing, values[key])
       }
     }
   },

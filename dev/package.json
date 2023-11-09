@@ -13,6 +13,7 @@
   "author": "guansss",
   "license": "MIT",
   "dependencies": {
+    "@types/lodash-es": "^4.17.11",
     "@types/react": "^18.2.36",
     "@types/react-dom": "^18.2.14",
     "@types/tampermonkey": "^5.0.0",
@@ -21,6 +22,7 @@
     "clsx": "^2.0.0",
     "css-loader": "^6.8.1",
     "jotai": "^2.5.1",
+    "lodash-es": "^4.17.21",
     "mini-css-extract-plugin": "^2.7.6",
     "postcss": "^8.4.31",
     "postcss-loader": "^7.3.3",
