@@ -1,23 +1,18 @@
 import { createBirpc } from "birpc"
+import { Simplify } from "type-fest"
 import { ClientFunctions } from "../page/page-rpc"
-import { ignoreError } from "../utils/error"
+import { ignoreError, isBirpcTimeoutError } from "../utils/error"
+import { updatePageImage } from "./image"
 
 // using a class since decorators can only be used in classes (currently)
 const serverFunctions = new (class {
-  @ignoreError("[birpc] timeout")
+  @ignoreError(isBirpcTimeoutError)
   async initPage() {
-    await hostRpc.setAtom({
-      images: [
-        {
-          filename: "test",
-          path: "test",
-        },
-      ],
-    })
+    await updatePageImage()
   }
 })()
 
-export type ServerFunctions = typeof serverFunctions
+export type ServerFunctions = Simplify<typeof serverFunctions>
 
 const channel = new BroadcastChannel("sd-portal-channel")
 

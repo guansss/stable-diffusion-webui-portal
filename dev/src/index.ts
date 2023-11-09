@@ -1,9 +1,3 @@
-// declare global {
-//   interface Window {
-//     gradio_config?: any
-//   }
-// }
-
 async function main() {
   if (location.host !== "localhost:8080") {
     return

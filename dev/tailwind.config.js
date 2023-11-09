@@ -4,5 +4,17 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    /** @type {import('tailwindcss/types/config').PluginCreator} */
+    ({ addUtilities }) => {
+      addUtilities({
+        ".absolute-center": {
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+        },
+      })
+    },
+  ],
 }

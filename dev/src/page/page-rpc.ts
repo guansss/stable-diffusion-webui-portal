@@ -1,17 +1,13 @@
 import { createBirpc } from "birpc"
+import { getDefaultStore } from "jotai"
 import { ServerFunctions } from "../host/host-rpc"
-import { AtomValues, atoms, store } from "./store"
-
-export type SDImage = {
-  filename: string
-  path: string
-}
+import { AtomValues, atoms } from "./store"
 
 const clientFunctions = {
   async setAtom<T extends AtomValues>(values: T) {
     for (const key in values) {
       if (atoms.hasOwnProperty(key)) {
-        store.set(atoms[key as keyof AtomValues], values[key] as any)
+        getDefaultStore().set(atoms[key as keyof AtomValues], values[key] as IKnowWhatIAmDoing)
       }
     }
   },

@@ -1,14 +1,11 @@
-import { ExtractAtomValue, atom, createStore } from "jotai"
+import { ExtractAtomValue, atom } from "jotai"
 
 export type SDImage = {
-  filename: string
-  path: string
+  url: string
 }
 
-export const store = createStore()
-
 export namespace atoms {
-  export const images = atom<SDImage[]>([])
+  export const image = atom<SDImage | undefined>(undefined)
 }
 
 type Atoms = typeof atoms
