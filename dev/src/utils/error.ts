@@ -11,7 +11,7 @@ export function ignoreError(test: string | ((e: unknown) => boolean)) {
       testFn = (e) => String(e).includes(test)
     }
 
-    async function ignoreErrorWrapper(this: This, ...args: Args): Promise<void> {
+    return async function ignoreErrorWrapper(this: This, ...args: Args): Promise<void> {
       try {
         return await target.call(this, ...args)
       } catch (e) {
@@ -20,8 +20,6 @@ export function ignoreError(test: string | ((e: unknown) => boolean)) {
         }
       }
     }
-
-    return ignoreErrorWrapper
   }
 }
 

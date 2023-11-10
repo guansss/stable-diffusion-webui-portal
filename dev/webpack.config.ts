@@ -55,6 +55,13 @@ export default (env: Record<string, string | boolean>, { mode }: { mode: string 
   if (isDev) {
     return monkey({
       ...config,
+      monkey: {
+        devScript: {
+          meta: {
+            noframes: true,
+          },
+        },
+      },
     })
   }
 

@@ -1,8 +1,11 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
+import { log } from "../utils/log"
 import { ImageViewer } from "./ImageViewer"
 import { pageRpc } from "./page-rpc"
 import "./page.css"
+
+log("Starting page")
 
 function Page() {
   return (

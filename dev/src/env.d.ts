@@ -4,8 +4,7 @@
 
 type IKnowWhatIAmDoing = any
 
-interface Window {
-  gradio_config?: any
-}
+var gradio_config: { title: string } | undefined
+var gradioApp: () => HTMLElement
 
-const gradioApp: () => HTMLDivElement
+function onUiLoaded(callback: () => void): void

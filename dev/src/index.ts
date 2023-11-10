@@ -1,15 +1,30 @@
-async function main() {
-  if (location.host !== "localhost:8080") {
-    return
-  }
-  // if (unsafeWindow.gradio_config?.title !== "Stable Diffusion") {
-  //   return
-  // }
+import { log } from "./utils/log"
 
-  if (location.pathname.includes("page.html")) {
+declare global {
+  interface Window {
+    __sd_portal_ui_loaded?: boolean
+  }
+}
+
+async function main() {
+  log("Starting")
+
+  const gradioTitle = typeof gradio_config === "undefined" ? undefined : gradio_config.title
+  log("Title:", gradioTitle)
+
+  if (gradioTitle === "Stable Diffusion") {
+    log("Waiting for UI to load")
+
+    if (!window.__sd_portal_ui_loaded) {
+      await new Promise<void>((resolve) => onUiLoaded(resolve))
+    }
+    window.__sd_portal_ui_loaded = true
+
+    log("Loading host")
+    import("./host/host").catch(console.warn)
+  } else if (location.pathname.includes("page.html")) {
+    log("Loading page")
     await import("./page/page")
-  } else {
-    await import("./host/host")
   }
 }
 
