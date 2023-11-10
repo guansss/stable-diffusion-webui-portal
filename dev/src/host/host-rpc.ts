@@ -10,6 +10,10 @@ const hostFunctions = new (class HostRpc {
   @logged()
   @ignoreError(isBirpcTimeoutError)
   async initPage() {
+    await hostRpc.setAtom({
+      connected: true,
+    })
+
     await sendImage()
     await sendLivePreview()
   }

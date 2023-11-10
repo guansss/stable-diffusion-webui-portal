@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai"
 import { FC } from "react"
-import { atoms } from "./store"
+import { atoms } from "../store"
 import { cn } from "./utils"
 
 interface ImageViewerProps {

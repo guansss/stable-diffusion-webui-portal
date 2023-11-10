@@ -1,4 +1,4 @@
-import { atom } from "jotai"
+import { atom, createStore } from "jotai"
 import { atomWithReducer } from "jotai/utils"
 import { ExtractAtomArgs } from "jotai/vanilla"
 import { compact } from "lodash-es"
@@ -7,7 +7,11 @@ export type SDImage = {
   url: string
 }
 
+export const store = createStore()
+
 export namespace atoms {
+  export const connected = atom(false)
+
   export const image = atom<SDImage | undefined>(undefined)
 
   /**
