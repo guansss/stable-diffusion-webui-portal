@@ -7,6 +7,12 @@ if (DEV) {
   log.enabled = true
 }
 
+export function truncateImageSrc(src: string) {
+  if (src.startsWith("data:")) {
+    return src.slice(0, 80) + "..."
+  }
+}
+
 export function logged() {
   return function loggedDecorator<This, Args extends any[], Return>(
     target: (this: This, ...args: Args) => Return,
@@ -25,7 +31,7 @@ export function logged() {
     })
 
     return function loggedWrapper(this: This, ...args: Args) {
-      console.log(`[${className}.${name as string}]`, ...args)
+      log(`[${className}.${name as string}]`, ...args)
       return target.call(this, ...args)
     }
   }

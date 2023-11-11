@@ -1,4 +1,5 @@
 import { log } from "./utils/log"
+import { webui_onUiLoaded } from "./utils/webui"
 
 declare global {
   interface Window {
@@ -16,7 +17,7 @@ async function main() {
     log("Waiting for UI to load")
 
     if (!window.__sd_portal_ui_loaded) {
-      await new Promise<void>((resolve) => onUiLoaded(resolve))
+      await new Promise<void>((resolve) => webui_onUiLoaded(resolve))
     }
     window.__sd_portal_ui_loaded = true
 

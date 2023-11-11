@@ -1,16 +1,15 @@
 import { createBirpc } from "birpc"
-import { getDefaultStore } from "jotai"
-import { HostFunctions } from "../host/host-rpc"
-import { AtomArgs, atoms } from "./store"
 import { Simplify } from "type-fest"
+import { HostFunctions } from "../host/host-rpc"
 import { logged } from "../utils/log"
+import { AtomArgs, atoms, store } from "./store"
 
 const pageFunctions = new (class PageRpc {
   @logged()
   async setAtom<K extends keyof AtomArgs>(values: { [P in K]: AtomArgs[P] }) {
     for (const key in values) {
       if (atoms.hasOwnProperty(key)) {
-        getDefaultStore().set(atoms[key] as IKnowWhatIAmDoing, values[key])
+        store.set(atoms[key] as IKnowWhatIAmDoing, values[key])
       }
     }
   }

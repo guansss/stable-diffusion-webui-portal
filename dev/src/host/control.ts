@@ -24,7 +24,7 @@ function insertOpenButton(targetButton: HTMLElement) {
   openButton.innerText = "🖥️"
   openButton.title = "Open Portal (stable-diffusion-webui-portal)"
   // TODO: https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/5ef669de080814067961f28357256e8fe27544f4/modules/scripts.py#L300-L305
-  openButton.href = "/page.html"
+  openButton.href = "/file=extensions/stable-diffusion-webui-portal/page.html"
   openButton.target = "_blank"
 
   openButton.addEventListener("click", (e) => {

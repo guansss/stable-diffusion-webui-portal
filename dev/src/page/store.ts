@@ -25,6 +25,10 @@ export namespace atoms {
   })
 }
 
+Object.entries(atoms).forEach(([name, atom]) => {
+  atom.debugLabel = name
+})
+
 type Atoms = typeof atoms
 
 export type AtomArgs = {

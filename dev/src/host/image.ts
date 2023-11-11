@@ -1,19 +1,12 @@
 import { isBirpcTimeoutError } from "../utils/error"
-import { log } from "../utils/log"
+import { log, truncateImageSrc } from "../utils/log"
+import { webui_onAfterUiUpdate } from "../utils/webui"
 import { hostRpc } from "./host-rpc"
 
 let currentVisibleImageElement: HTMLImageElement | undefined
 let currentLivePreview: string | undefined
 
 export function watchImages() {
-  const galleryImages = gradioApp().querySelectorAll(
-    ".gradio-gallery > div > img",
-  ) as NodeListOf<HTMLImageElement>
-
-  log("Watching images", galleryImages)
-
-  currentVisibleImageElement = galleryImages[0]
-
   const visibilityObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -24,8 +17,6 @@ export function watchImages() {
     })
   })
 
-  galleryImages.forEach((img) => visibilityObserver.observe(img))
-
   const srcObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.target === currentVisibleImageElement) {
@@ -35,12 +26,37 @@ export function watchImages() {
     })
   })
 
-  galleryImages.forEach((img) =>
-    srcObserver.observe(img, {
-      attributes: true,
-      attributeFilter: ["src"],
-    }),
-  )
+  webui_onAfterUiUpdate(() => {
+    const galleryImages = gradioApp().querySelectorAll(
+      ".gradio-gallery > div > img",
+    ) as NodeListOf<HTMLImageElement>
+
+    currentVisibleImageElement ||= galleryImages[0]
+
+    galleryImages.forEach((img) => {
+      if (img.dataset.sdPortalModded) {
+        return
+      }
+
+      img.dataset.sdPortalModded = "1"
+
+      module.hot?.dispose(() => {
+        delete img.dataset.sdPortalModded
+      })
+
+      if (img.parentElement?.classList.contains("livePreview")) {
+        return
+      }
+
+      log("Observing image", img)
+
+      visibilityObserver.observe(img)
+      srcObserver.observe(img, {
+        attributes: true,
+        attributeFilter: ["src"],
+      })
+    })
+  })
 
   module.hot?.dispose(() => {
     visibilityObserver.disconnect()
@@ -71,6 +87,14 @@ export function watchLivePreviews() {
           void sendLivePreview()
         }
       })
+
+      mutation.removedNodes.forEach((node) => {
+        if (node instanceof HTMLElement && node.classList.contains("livePreview")) {
+          log("Live preview removed", node)
+          currentLivePreview = undefined
+          void sendLivePreview()
+        }
+      })
     })
   })
 
@@ -84,21 +108,19 @@ export function watchLivePreviews() {
 }
 
 export async function sendLivePreview() {
-  if (!currentLivePreview) {
-    log("No live preview")
-    return
-  }
-
   try {
-    log("Sending live preview", currentLivePreview)
+    log("Sending live preview", truncateImageSrc(currentLivePreview || "(none)"))
 
     await hostRpc.setAtom({
-      livePreviews: {
-        url: currentLivePreview,
-      },
+      livePreviews: currentLivePreview
+        ? {
+            url: currentLivePreview,
+          }
+        : null,
     })
   } catch (e) {
     if (!isBirpcTimeoutError(e)) {
+      console.warn(e)
       // TODO: toast the error
     }
   }
@@ -106,12 +128,12 @@ export async function sendLivePreview() {
 
 export async function sendImage() {
   if (!currentVisibleImageElement?.src) {
-    log("No image")
+    log("No image to send")
     return
   }
 
   try {
-    log("Sending image", currentVisibleImageElement.src)
+    log("Sending image", truncateImageSrc(currentVisibleImageElement.src))
 
     await hostRpc.setAtom({
       image: {
@@ -120,6 +142,7 @@ export async function sendImage() {
     })
   } catch (e) {
     if (!isBirpcTimeoutError(e)) {
+      console.warn(e)
       // TODO: toast the error
     }
   }

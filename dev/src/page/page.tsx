@@ -1,12 +1,13 @@
-import { useAtomValue } from "jotai"
+import { Provider, useAtomValue } from "jotai"
+import { DevTools } from "jotai-devtools"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { log } from "../utils/log"
+import { Connector } from "./components/Connector"
 import { ImageViewer } from "./components/ImageViewer"
 import { Toaster } from "./components/ui/toast"
 import "./page.css"
-import { atoms } from "./store"
-import { Connector } from "./components/Connector"
+import { atoms, store } from "./store"
 
 log("Starting page")
 
@@ -24,8 +25,11 @@ function Page() {
 const root = createRoot(document.getElementById("root")!)
 root.render(
   <StrictMode>
-    <Page />
-    <Toaster />
+    <Provider store={store}>
+      <DevTools store={store} />
+      <Page />
+      <Toaster />
+    </Provider>
   </StrictMode>,
 )
 

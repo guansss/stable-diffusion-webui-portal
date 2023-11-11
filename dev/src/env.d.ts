@@ -6,5 +6,3 @@ type IKnowWhatIAmDoing = any
 
 var gradio_config: { title: string } | undefined
 var gradioApp: () => HTMLElement
-
-function onUiLoaded(callback: () => void): void

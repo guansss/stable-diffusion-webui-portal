@@ -2,12 +2,10 @@ import { useAtomValue } from "jotai"
 import { FC, useEffect, useState } from "react"
 import { pageRpc } from "../page-rpc"
 import { atoms } from "../store"
-import { useToast } from "./ui/use-toast"
-import { Button } from "./ui/button"
+import { Button } from "./ui/Button"
 
 export const Connector: FC = () => {
   const connected = useAtomValue(atoms.connected)
-  const { toast } = useToast()
 
   const [error, setError] = useState("")
 
