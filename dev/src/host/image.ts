@@ -139,20 +139,29 @@ export async function sendImage() {
     return
   }
 
-  try {
-    log("Sending image", truncateImageSrc(currentImageElement.src))
+  log("Sending image", truncateImageSrc(currentImageElement.src))
 
-    await hostRpc.setAtom({
+  await hostRpc.ignoreTimeout
+    .setAtom({
       image: {
         url: currentImageElement.src,
       },
     })
-  } catch (e) {
-    if (!isBirpcTimeoutError(e)) {
-      console.warn(e)
-      // TODO: toast the error
-    }
-  }
+    .catch(log)
+}
+
+export async function sendLivePreview() {
+  log("Sending live preview", truncateImageSrc(currentLivePreview ?? "(none)"))
+
+  await hostRpc.ignoreTimeout
+    .setAtom({
+      livePreviews: currentLivePreview
+        ? {
+            url: currentLivePreview,
+          }
+        : undefined,
+    })
+    .catch(log)
 }
 
 module.hot?.dispose(() => {

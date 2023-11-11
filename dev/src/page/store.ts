@@ -17,13 +17,19 @@ export namespace atoms {
 
   /**
    * There can be at most 2 live previews. Setting a new one will push the oldest one out,
-   * and setting null will clear the list.
+   * and setting undefined will clear the list.
    */
-  export const livePreviews = atomWithReducer([] as SDImage[], (prev, next: SDImage | null) => {
-    if (next === null) return []
+  export const livePreviews = atomWithReducer(
+    [] as SDImage[],
+    (prev, next: SDImage | undefined) => {
+      console.log("livePreviews", prev, next)
+      if (!next) return []
 
-    return compact([...prev, next]).slice(0, 2)
-  })
+      return compact([...prev, next]).slice(0, 2)
+    },
+  )
+
+  export const progress = atom<SDProgress | undefined>(undefined)
 }
 
 Object.entries(atoms).forEach(([name, atom]) => {
@@ -33,7 +39,5 @@ Object.entries(atoms).forEach(([name, atom]) => {
 type Atoms = typeof atoms
 
 export type AtomArgs = {
-  [K in keyof Atoms]: ExtractAtomArgs<Atoms[K]> extends { length: 1 }
-    ? ExtractAtomArgs<Atoms[K]>[0]
-    : never
+  [K in keyof Atoms]: ExtractAtomArgs<Atoms[K]>[0]
 }

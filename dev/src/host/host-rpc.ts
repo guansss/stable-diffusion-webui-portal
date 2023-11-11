@@ -1,16 +1,14 @@
-import { createBirpc } from "birpc"
 import type { Simplify } from "type-fest"
 import type { PageFunctions } from "../page/page-rpc"
-import { ignoreError, isBirpcTimeoutError } from "../utils/error"
 import { logged } from "../utils/log"
+import { createRpc } from "../utils/rpc"
 import { sendImage, sendLivePreview } from "./image"
 
 // using a class since decorators can only be used in classes (currently)
 const hostFunctions = new (class HostRpc {
   @logged()
-  @ignoreError(isBirpcTimeoutError)
   async initPage() {
-    await hostRpc.setAtom({
+    await hostRpc.ignoreTimeout.setAtom({
       connected: true,
     })
 
@@ -21,14 +19,4 @@ const hostFunctions = new (class HostRpc {
 
 export type HostFunctions = Simplify<typeof hostFunctions>
 
-const channel = new BroadcastChannel("sd-portal-channel")
-
-export const hostRpc = createBirpc<PageFunctions, HostFunctions>(hostFunctions, {
-  on: (on) => (channel.onmessage = (e) => on(e.data)),
-  post: (msg) => channel.postMessage(msg),
-  timeout: 1000,
-})
-
-module.hot?.dispose(() => {
-  channel.close()
-})
+export const hostRpc = createRpc<PageFunctions, HostFunctions>(hostFunctions)
