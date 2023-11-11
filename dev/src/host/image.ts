@@ -28,9 +28,9 @@ export function watchImages() {
   })
 
   webui_onAfterUiUpdate(() => {
-    const galleryImages = gradioApp().querySelectorAll(
+    const galleryImages = gradioApp().querySelectorAll<HTMLImageElement>(
       ".gradio-gallery > div > img",
-    ) as NodeListOf<HTMLImageElement>
+    )
 
     currentImageElement ||= galleryImages[0]
 
@@ -54,7 +54,7 @@ export function watchImages() {
       if (currentImageElement === undefined) {
         // most likely the img already has a src, so we send it immediately
         currentImageElement ||= img
-        sendImage()
+        void sendImage()
       }
 
       visibilityObserver.observe(img)

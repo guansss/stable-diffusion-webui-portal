@@ -1,6 +1,6 @@
 import { createBirpc } from "birpc"
-import { Simplify } from "type-fest"
-import { PageFunctions } from "../page/page-rpc"
+import type { Simplify } from "type-fest"
+import type { PageFunctions } from "../page/page-rpc"
 import { ignoreError, isBirpcTimeoutError } from "../utils/error"
 import { logged } from "../utils/log"
 import { sendImage, sendLivePreview } from "./image"

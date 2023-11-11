@@ -3,7 +3,7 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin"
 import path from "path"
 import postcssPresetEnv from "postcss-preset-env"
 import tailwindcss from "tailwindcss"
-import { Configuration } from "webpack"
+import type { Configuration } from "webpack"
 import { monkey } from "webpack-monkey"
 
 export default (env: Record<string, string | boolean>, { mode }: { mode: string }) => {

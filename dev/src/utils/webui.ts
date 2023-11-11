@@ -1,6 +1,6 @@
 declare global {
-  var uiLoadedCallbacks: (() => void)[]
-  var uiAfterUpdateCallbacks: (() => void)[]
+  let uiLoadedCallbacks: (() => void)[]
+  let uiAfterUpdateCallbacks: (() => void)[]
 
   function onUiLoaded(callback: () => void): void
   function onAfterUiUpdate(callback: () => void): void

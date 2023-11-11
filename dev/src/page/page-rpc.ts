@@ -1,15 +1,16 @@
 import { createBirpc } from "birpc"
-import { Simplify } from "type-fest"
-import { HostFunctions } from "../host/host-rpc"
+import type { Simplify } from "type-fest"
+import type { HostFunctions } from "../host/host-rpc"
 import { logged } from "../utils/log"
-import { AtomArgs, atoms, store } from "./store"
+import type { AtomArgs } from "./store"
+import { atoms, store } from "./store"
 
 const pageFunctions = new (class PageRpc {
   @logged()
   async setAtom<K extends keyof AtomArgs>(values: { [P in K]: AtomArgs[P] }) {
     for (const key in values) {
-      if (atoms.hasOwnProperty(key)) {
-        store.set(atoms[key] as IKnowWhatIAmDoing, values[key])
+      if (Object.prototype.hasOwnProperty.call(atoms, key)) {
+        ;(store.set as WhateverTheFuckFunction)(atoms[key], values[key])
       }
     }
   }

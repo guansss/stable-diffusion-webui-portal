@@ -22,5 +22,5 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
 
   log("Fetched", url, result)
 
-  return result
+  return result as T
 }

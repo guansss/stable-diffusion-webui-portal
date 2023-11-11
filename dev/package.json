@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "webpack serve --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "lint": "eslint . --rule \"prettier/prettier: error\"",
+    "lint:fix": "npm run lint -- --fix"
   },
   "repository": {
     "type": "git",
@@ -21,12 +23,17 @@
     "@types/react": "^18.2.36",
     "@types/react-dom": "^18.2.14",
     "@types/tampermonkey": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
     "autoprefixer": "^10.4.16",
     "birpc": "^0.2.14",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "css-loader": "^6.8.1",
     "debug": "^4.3.4",
+    "eslint": "^8.53.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "jotai": "^2.5.1",
     "jotai-devtools": "^0.7.0",
     "lodash-es": "^4.17.21",

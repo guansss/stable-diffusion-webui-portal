@@ -1,4 +1,4 @@
-import { UserscriptMeta } from "webpack-monkey"
+import type { UserscriptMeta } from "webpack-monkey"
 
 export default {
   name: "SD Portal",

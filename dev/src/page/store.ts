@@ -1,6 +1,6 @@
 import { atom, createStore } from "jotai"
 import { atomWithReducer } from "jotai/utils"
-import { ExtractAtomArgs } from "jotai/vanilla"
+import type { ExtractAtomArgs } from "jotai/vanilla"
 import { compact } from "lodash-es"
 
 export type SDImage = {
@@ -9,6 +9,7 @@ export type SDImage = {
 
 export const store = createStore()
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace atoms {
   export const connected = atom(false)
 

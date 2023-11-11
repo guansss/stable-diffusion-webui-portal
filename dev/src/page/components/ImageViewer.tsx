@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai"
-import { FC } from "react"
+import type { FC } from "react"
 import { atoms } from "../store"
 import { cn } from "./utils"
 

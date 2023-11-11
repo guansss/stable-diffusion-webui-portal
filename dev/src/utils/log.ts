@@ -1,4 +1,5 @@
 import debug from "debug"
+import type { Class } from "type-fest"
 import { DEV } from "../constants"
 
 export const log = debug("sd-portal")
@@ -14,7 +15,7 @@ export function truncateImageSrc(src: string) {
 }
 
 export function logged() {
-  return function loggedDecorator<This, Args extends any[], Return>(
+  return function loggedDecorator<This, Args extends unknown[], Return>(
     target: (this: This, ...args: Args) => Return,
     context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>,
   ) {
@@ -27,11 +28,11 @@ export function logged() {
     let className = "UnknownClass"
 
     context.addInitializer(function (this: This) {
-      className = Object.getPrototypeOf(this).constructor.name
+      className = (this as Class<unknown>).constructor.name
     })
 
     return function loggedWrapper(this: This, ...args: Args) {
-      log(`[${className}.${name as string}]`, ...args)
+      log(`[${className}.${name}]`, ...args)
       return target.call(this, ...args)
     }
   }

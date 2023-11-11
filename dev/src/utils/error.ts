@@ -1,5 +1,5 @@
 export function ignoreError(test: string | ((e: unknown) => boolean)) {
-  return function ignoreErrorDecorator<This, Args extends any[]>(
+  return function ignoreErrorDecorator<This, Args extends unknown[]>(
     target: (this: This, ...args: Args) => void | Promise<void>,
     context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => void | Promise<void>>,
   ) {
