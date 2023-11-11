@@ -12,6 +12,7 @@ export function truncateImageSrc(src: string) {
   if (src.startsWith("data:")) {
     return src.slice(0, 80) + "..."
   }
+  return src
 }
 
 export function logged() {
