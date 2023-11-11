@@ -7,11 +7,13 @@ import { watchImages, watchLivePreviews } from "./image"
 async function host() {
   log("Starting host")
 
+  await insertOpenButtons()
+
   watchImages()
   watchLivePreviews()
-  insertOpenButtons()
 
-  hostRpc.$functions.initPage()
+  // in case the page is already opened (as during development)
+  void hostRpc.$functions.initPage()
 }
 
 host().catch(console.warn)

@@ -49,7 +49,11 @@ export default (env: Record<string, string | boolean>, { mode }: { mode: string 
     resolve: {
       extensions: [".ts", ".tsx", "..."],
     },
-    devServer: {},
+    devServer: {
+      client: {
+        overlay: false,
+      },
+    },
   }
 
   if (isDev) {

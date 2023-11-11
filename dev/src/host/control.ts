@@ -1,14 +1,18 @@
 import { uniqueId } from "lodash-es"
 import { log } from "../utils/log"
+import { getExtensionInfo } from "./remote"
 
-export function insertOpenButtons() {
+export async function insertOpenButtons() {
+  const { dir } = await getExtensionInfo()
+  const url = "/file=" + dir + "/page.html"
+
   ;["txt2img_open_folder", "img2img_open_folder", "extras_open_folder"].forEach((id) => {
     const targetButton = document.getElementById(id)
-    if (targetButton) insertOpenButton(targetButton)
+    if (targetButton) insertOpenButton(targetButton, url)
   })
 }
 
-function insertOpenButton(targetButton: HTMLElement) {
+function insertOpenButton(targetButton: HTMLElement, url: string) {
   log("Inserting open button for", targetButton)
 
   const openButton = document.createElement("a")
@@ -23,8 +27,7 @@ function insertOpenButton(targetButton: HTMLElement) {
 
   openButton.innerText = "🖥️"
   openButton.title = "Open Portal (stable-diffusion-webui-portal)"
-  // TODO: https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/5ef669de080814067961f28357256e8fe27544f4/modules/scripts.py#L300-L305
-  openButton.href = "/file=extensions/stable-diffusion-webui-portal/page.html"
+  openButton.href = url
   openButton.target = "_blank"
 
   openButton.addEventListener("click", (e) => {
