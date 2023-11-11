@@ -10,6 +10,7 @@ interface ImageViewerProps {
 export const ImageViewer: FC<ImageViewerProps> = ({ className }) => {
   const image = useAtomValue(atoms.image)
   const livePreviews = useAtomValue(atoms.livePreviews)
+  const progress = useAtomValue(atoms.progress)
 
   return (
     <div className={cn("relative flex", className)}>
@@ -25,6 +26,7 @@ export const ImageViewer: FC<ImageViewerProps> = ({ className }) => {
         />
       ))}
       {!image && !livePreviews.length && <div className="absolute-center">no image</div>}
+      {progress && <div className="absolute top-0 left-0 shadow-md">{progress.text}</div>}
     </div>
   )
 }

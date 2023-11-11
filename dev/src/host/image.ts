@@ -1,5 +1,4 @@
 import { SimpleMutationObserver } from "../utils/dom"
-import { isBirpcTimeoutError } from "../utils/error"
 import { log, truncateImageSrc } from "../utils/log"
 import { webui_onAfterUiUpdate } from "../utils/webui"
 import { hostRpc } from "./host-rpc"
@@ -11,19 +10,23 @@ let currentLivePreview: string | undefined
 
 export function watchImages() {
   const visibilityObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
+    for (const entry of entries) {
       if (entry.isIntersecting) {
         log("Image visible", entry.target)
         currentImageElement = entry.target as HTMLImageElement
         void sendImage()
+
+        break
       }
-    })
+    }
   })
 
   const srcObserver = new SimpleMutationObserver(({ target }) => {
     if (target === currentImageElement) {
       log("Image src changed", target)
       void sendImage()
+
+      return true
     }
   })
 
@@ -114,23 +117,42 @@ export function watchLivePreviews() {
   })
 }
 
-export async function sendLivePreview() {
-  try {
-    log("Sending live preview", truncateImageSrc(currentLivePreview || "(none)"))
+export function watchProgress() {
+  const containers = [
+    document.getElementById("txt2img_results"),
+    document.getElementById("img2img_results"),
+  ].filter(Boolean) as HTMLDivElement[]
 
-    await hostRpc.setAtom({
-      livePreviews: currentLivePreview
-        ? {
-            url: currentLivePreview,
-          }
-        : null,
+  log("Watching progress in containers", containers)
+
+  const insertionObserver = new SimpleMutationObserver(({ target, addedNodes, removedNodes }) => {
+    addedNodes.forEach((node) => {
+      if (node instanceof HTMLElement && node.classList.contains("progressDiv")) {
+        log("Progress added", node)
+        insertionObserver.observe(node, { childList: true })
+
+        const progressText = node.getElementsByClassName("progress")[0]
+
+        if (progressText) {
+          log("Observing progress text", progressText)
+          insertionObserver.observe(progressText, { childList: true })
+        }
+      } else if (target instanceof HTMLElement && target.classList.contains("progress")) {
+        void sendProgress(target)
+      }
     })
-  } catch (e) {
-    if (!isBirpcTimeoutError(e)) {
-      console.warn(e)
-      // TODO: toast the error
-    }
-  }
+
+    removedNodes.forEach((node) => {
+      if (node instanceof HTMLElement && node.classList.contains("progressDiv")) {
+        log("Progress removed", node)
+        void sendProgress()
+      }
+    })
+  })
+
+  containers.forEach((gallery) => {
+    insertionObserver.observe(gallery, { childList: true })
+  })
 }
 
 export async function sendImage() {
@@ -160,6 +182,18 @@ export async function sendLivePreview() {
             url: currentLivePreview,
           }
         : undefined,
+    })
+    .catch(log)
+}
+
+async function sendProgress(progressText?: HTMLElement) {
+  const text = progressText?.textContent
+
+  log("Sending progress", text)
+
+  await hostRpc.ignoreTimeout
+    .setAtom({
+      progress: text ? { text } : undefined,
     })
     .catch(log)
 }

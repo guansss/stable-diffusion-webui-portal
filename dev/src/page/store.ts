@@ -7,6 +7,10 @@ export type SDImage = {
   url: string
 }
 
+export type SDProgress = {
+  text: string
+}
+
 export const store = createStore()
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

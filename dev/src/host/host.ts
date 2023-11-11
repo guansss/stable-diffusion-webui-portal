@@ -2,7 +2,7 @@ import { log } from "../utils/log"
 import { insertOpenButtons } from "./control"
 import { hostRpc } from "./host-rpc"
 import "./image"
-import { watchImages, watchLivePreviews } from "./image"
+import { watchImages, watchLivePreviews, watchProgress } from "./image"
 
 async function host() {
   log("Starting host")
@@ -11,6 +11,7 @@ async function host() {
 
   watchImages()
   watchLivePreviews()
+  watchProgress()
 
   // in case the page is already opened (as during development)
   void hostRpc.$functions.initPage()
