@@ -1,9 +1,12 @@
+import { SimpleMutationObserver } from "../utils/dom"
 import { isBirpcTimeoutError } from "../utils/error"
 import { log, truncateImageSrc } from "../utils/log"
 import { webui_onAfterUiUpdate } from "../utils/webui"
 import { hostRpc } from "./host-rpc"
 
-let currentVisibleImageElement: HTMLImageElement | undefined
+// the most recently visible image to watch
+let currentImageElement: HTMLImageElement | undefined
+
 let currentLivePreview: string | undefined
 
 export function watchImages() {
@@ -11,19 +14,17 @@ export function watchImages() {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         log("Image visible", entry.target)
-        currentVisibleImageElement = entry.target as HTMLImageElement
+        currentImageElement = entry.target as HTMLImageElement
         void sendImage()
       }
     })
   })
 
-  const srcObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.target === currentVisibleImageElement) {
-        log("Image src changed", mutation.target)
-        void sendImage()
-      }
-    })
+  const srcObserver = new SimpleMutationObserver(({ target }) => {
+    if (target === currentImageElement) {
+      log("Image src changed", target)
+      void sendImage()
+    }
   })
 
   webui_onAfterUiUpdate(() => {
@@ -31,7 +32,7 @@ export function watchImages() {
       ".gradio-gallery > div > img",
     ) as NodeListOf<HTMLImageElement>
 
-    currentVisibleImageElement ||= galleryImages[0]
+    currentImageElement ||= galleryImages[0]
 
     galleryImages.forEach((img) => {
       if (img.dataset.sdPortalModded) {
@@ -50,6 +51,12 @@ export function watchImages() {
 
       log("Observing image", img)
 
+      if (currentImageElement === undefined) {
+        // most likely the img already has a src, so we send it immediately
+        currentImageElement ||= img
+        sendImage()
+      }
+
       visibilityObserver.observe(img)
       srcObserver.observe(img, {
         attributes: true,
@@ -60,7 +67,6 @@ export function watchImages() {
 
   module.hot?.dispose(() => {
     visibilityObserver.disconnect()
-    srcObserver.disconnect()
   })
 }
 
@@ -72,38 +78,39 @@ export function watchLivePreviews() {
 
   log("Watching live previews", galleries)
 
-  const insertionObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
-        if (node instanceof HTMLElement && node.classList.contains("livePreview")) {
-          log("Live preview added", node)
-          insertionObserver.observe(node, { childList: true })
-        } else if (
-          node instanceof HTMLImageElement &&
-          node.parentElement?.classList.contains("livePreview")
-        ) {
-          log("Live preview image added", node)
-          currentLivePreview = node.src
-          void sendLivePreview()
-        }
-      })
+  const insertionObserver = new SimpleMutationObserver(({ addedNodes, removedNodes }) => {
+    addedNodes.forEach((node) => {
+      if (node instanceof HTMLElement && node.classList.contains("livePreview")) {
+        log("Live preview added", node)
+        insertionObserver.observe(node, { childList: true })
 
-      mutation.removedNodes.forEach((node) => {
-        if (node instanceof HTMLElement && node.classList.contains("livePreview")) {
-          log("Live preview removed", node)
-          currentLivePreview = undefined
+        const existingImg = node.getElementsByTagName("img")[0]
+
+        if (existingImg) {
+          currentLivePreview = existingImg.src
           void sendLivePreview()
         }
-      })
+      } else if (
+        node instanceof HTMLImageElement &&
+        node.parentElement?.classList.contains("livePreview")
+      ) {
+        log("Live preview image added", node)
+        currentLivePreview = node.src
+        void sendLivePreview()
+      }
+    })
+
+    removedNodes.forEach((node) => {
+      if (node instanceof HTMLElement && node.classList.contains("livePreview")) {
+        log("Live preview removed", node)
+        currentLivePreview = undefined
+        void sendLivePreview()
+      }
     })
   })
 
   galleries.forEach((gallery) => {
     insertionObserver.observe(gallery, { childList: true })
-  })
-
-  module.hot?.dispose(() => {
-    insertionObserver.disconnect()
   })
 }
 
@@ -127,17 +134,17 @@ export async function sendLivePreview() {
 }
 
 export async function sendImage() {
-  if (!currentVisibleImageElement?.src) {
+  if (!currentImageElement?.src) {
     log("No image to send")
     return
   }
 
   try {
-    log("Sending image", truncateImageSrc(currentVisibleImageElement.src))
+    log("Sending image", truncateImageSrc(currentImageElement.src))
 
     await hostRpc.setAtom({
       image: {
-        url: currentVisibleImageElement.src,
+        url: currentImageElement.src,
       },
     })
   } catch (e) {
@@ -149,6 +156,6 @@ export async function sendImage() {
 }
 
 module.hot?.dispose(() => {
-  currentVisibleImageElement = undefined
+  currentImageElement = undefined
   currentLivePreview = undefined
 })
