@@ -12,18 +12,16 @@ declare global {
   }
 }
 
-if (DEV) {
-  webui_onUiLoaded(() => {
-    window.__sd_portal_ui_loaded = true
-  })
-}
-
 export function webui_onUiLoaded(callback: () => void) {
   if (DEV) {
     if (window.__sd_portal_ui_loaded) {
       callback()
       return
     }
+
+    webui_onUiLoaded(() => {
+      window.__sd_portal_ui_loaded = true
+    })
   }
 
   onUiLoaded(callback)
