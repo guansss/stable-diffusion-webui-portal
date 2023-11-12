@@ -1,12 +1,8 @@
 module.exports = {
-  // addition to .eslintignore
-  ignorePatterns: ["/cubism", "*.js"],
-
   env: {
     browser: true,
     es2020: true,
     node: true,
-    mocha: true,
   },
   extends: [
     "eslint:recommended",
@@ -25,7 +21,7 @@ module.exports = {
     // "warn" is for better DX in IDEs, and will be changed to "error" when running "npm run lint"
     "prettier/prettier": "warn",
 
-    // IDEs already warn about unused vars
+    // IDEs already note unused vars
     "@typescript-eslint/no-unused-vars": "off",
 
     // makes code too verbose
@@ -33,9 +29,6 @@ module.exports = {
 
     // what's the point?
     "@typescript-eslint/require-await": "off",
-
-    // maybe enable these later
-    "@typescript-eslint/no-unsafe-assignment": "off",
   },
   overrides: [
     {

@@ -18,9 +18,9 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
     throw new Error(`Failed to fetch ${url} (${res.status})`)
   }
 
-  const result = await res.json()
+  const result = (await res.json()) as T
 
   log("Fetched", url, result)
 
-  return result as T
+  return result
 }
