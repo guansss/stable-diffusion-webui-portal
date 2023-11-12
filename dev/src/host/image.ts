@@ -177,7 +177,7 @@ export async function sendLivePreview() {
 
   await hostRpc.ignoreTimeout
     .setAtom({
-      livePreviews: currentLivePreview
+      livePreview: currentLivePreview
         ? {
             url: currentLivePreview,
           }
