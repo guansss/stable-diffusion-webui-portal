@@ -2,7 +2,7 @@ import debug from "debug"
 import type { Class } from "type-fest"
 import { DEV } from "../constants"
 
-export const log = debug("sd-portal")
+export const log = debug("sd-portal" + (DEV ? "-dev" : ""))
 
 if (DEV) {
   log.enabled = true

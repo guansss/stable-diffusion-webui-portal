@@ -17,4 +17,4 @@ async function host() {
   void hostRpc.$functions.initPage()
 }
 
-host().catch(console.warn)
+host().catch(log)

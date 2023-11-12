@@ -1,8 +1,24 @@
+import { DEV } from "./constants"
 import { log } from "./utils/log"
 import { webui_onUiLoaded } from "./utils/webui"
 
+declare global {
+  interface Window {
+    __sd_portal_dev?: boolean
+  }
+}
+
 async function main() {
   log("Starting")
+
+  if (DEV) {
+    unsafeWindow.__sd_portal_dev = true
+  }
+
+  if (!DEV && window.__sd_portal_dev) {
+    log("Dev mode detected, exiting")
+    return
+  }
 
   const gradioTitle = typeof gradio_config === "undefined" ? undefined : gradio_config.title
   log("Title:", gradioTitle)
@@ -13,13 +29,13 @@ async function main() {
     await new Promise<void>((resolve) => webui_onUiLoaded(resolve))
 
     log("Loading host")
-    import("./host/host").catch(console.warn)
+    import("./host/host").catch(log)
   } else if (location.pathname.includes("page.html")) {
     log("Loading page")
     await import("./page/page")
   }
 }
 
-main().catch(console.warn)
+main().catch(log)
 
 module.hot?.monkeyReload()
