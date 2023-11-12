@@ -1,12 +1,31 @@
+import { DEV } from "../constants"
+
 declare global {
   let uiLoadedCallbacks: (() => void)[]
   let uiAfterUpdateCallbacks: (() => void)[]
 
   function onUiLoaded(callback: () => void): void
   function onAfterUiUpdate(callback: () => void): void
+
+  interface Window {
+    __sd_portal_ui_loaded?: boolean
+  }
+}
+
+if (DEV) {
+  webui_onUiLoaded(() => {
+    window.__sd_portal_ui_loaded = true
+  })
 }
 
 export function webui_onUiLoaded(callback: () => void) {
+  if (DEV) {
+    if (window.__sd_portal_ui_loaded) {
+      callback()
+      return
+    }
+  }
+
   onUiLoaded(callback)
 
   module.hot?.dispose(() => {

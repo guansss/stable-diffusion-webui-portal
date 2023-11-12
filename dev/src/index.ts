@@ -1,12 +1,6 @@
 import { log } from "./utils/log"
 import { webui_onUiLoaded } from "./utils/webui"
 
-declare global {
-  interface Window {
-    __sd_portal_ui_loaded?: boolean
-  }
-}
-
 async function main() {
   log("Starting")
 
@@ -16,10 +10,7 @@ async function main() {
   if (gradioTitle === "Stable Diffusion") {
     log("Waiting for UI to load")
 
-    if (!window.__sd_portal_ui_loaded) {
-      await new Promise<void>((resolve) => webui_onUiLoaded(resolve))
-    }
-    window.__sd_portal_ui_loaded = true
+    await new Promise<void>((resolve) => webui_onUiLoaded(resolve))
 
     log("Loading host")
     import("./host/host").catch(console.warn)
