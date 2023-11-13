@@ -10,10 +10,22 @@ export default (env: Record<string, string | boolean>, { mode }: { mode: string 
   const isDev = mode === "development"
 
   const config: Configuration = {
-    entry: "./src/index.ts",
+    entry: isDev
+      ? {
+          main: "./src/index.ts",
+        }
+      : {
+          "javascript/host": "./src/host/host.ts",
+          "client/client": "./src/page/page.tsx",
+        },
     output: {
       filename: "[name].js",
-      path: path.resolve(__dirname, "dist"),
+      chunkFilename: isDev
+        ? undefined
+        : () => {
+            throw new Error("additional chunks are not (yet?) supported in production")
+          },
+      path: path.resolve(__dirname, ".."),
     },
     plugins: [new MiniCssExtractPlugin()],
     module: {
