@@ -1,3 +1,4 @@
+import { pull } from "lodash-es"
 import { DEV } from "../constants"
 
 declare global {
@@ -19,16 +20,21 @@ export function webui_onUiLoaded(callback: () => void) {
       return
     }
 
-    webui_onUiLoaded(() => {
+    const internalCallback = () => {
       window.__sd_portal_ui_loaded = true
+    }
+
+    onUiLoaded(internalCallback)
+
+    module.hot?.dispose(() => {
+      pull(uiLoadedCallbacks, internalCallback)
     })
   }
 
   onUiLoaded(callback)
 
   module.hot?.dispose(() => {
-    const index = uiLoadedCallbacks.indexOf(callback)
-    if (index >= 0) uiLoadedCallbacks.splice(index, 1)
+    pull(uiLoadedCallbacks, callback)
   })
 }
 
@@ -36,7 +42,6 @@ export function webui_onAfterUiUpdate(callback: () => void) {
   onAfterUiUpdate(callback)
 
   module.hot?.dispose(() => {
-    const index = uiAfterUpdateCallbacks.indexOf(callback)
-    if (index >= 0) uiAfterUpdateCallbacks.splice(index, 1)
+    pull(uiAfterUpdateCallbacks, callback)
   })
 }
