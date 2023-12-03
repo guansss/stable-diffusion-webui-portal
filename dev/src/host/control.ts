@@ -8,7 +8,11 @@ export async function insertOpenButtons() {
 
   ;["txt2img_open_folder", "img2img_open_folder", "extras_open_folder"].forEach((id) => {
     const targetButton = document.getElementById(id)
-    if (targetButton) insertOpenButton(targetButton, url)
+    if (targetButton) {
+      insertOpenButton(targetButton, url)
+    } else {
+      log("Could not find target button", id)
+    }
   })
 }
 

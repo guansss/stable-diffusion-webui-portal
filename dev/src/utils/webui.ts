@@ -13,10 +13,10 @@ declare global {
   }
 }
 
-export function webui_onUiLoaded(callback: () => void) {
+export const webuiLoaded = new Promise<void>((resolve) => {
   if (DEV) {
     if (window.__sd_portal_ui_loaded) {
-      callback()
+      resolve()
       return
     }
 
@@ -30,13 +30,12 @@ export function webui_onUiLoaded(callback: () => void) {
       pull(uiLoadedCallbacks, internalCallback)
     })
   }
-
-  onUiLoaded(callback)
+  onUiLoaded(resolve)
 
   module.hot?.dispose(() => {
-    pull(uiLoadedCallbacks, callback)
+    pull(uiLoadedCallbacks, resolve)
   })
-}
+})
 
 export function webui_onAfterUiUpdate(callback: () => void) {
   onAfterUiUpdate(callback)

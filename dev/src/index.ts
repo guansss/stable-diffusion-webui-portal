@@ -1,6 +1,5 @@
 import { DEV } from "./constants"
 import { log } from "./utils/log"
-import { webui_onUiLoaded } from "./utils/webui"
 
 declare global {
   interface Window {
@@ -24,10 +23,6 @@ async function main() {
   log("Title:", gradioTitle)
 
   if (gradioTitle === "Stable Diffusion") {
-    log("Waiting for UI to load")
-
-    await new Promise<void>((resolve) => webui_onUiLoaded(resolve))
-
     log("Loading host")
     import("./host/host").catch(log)
   } else if (location.pathname.includes("page.html")) {
