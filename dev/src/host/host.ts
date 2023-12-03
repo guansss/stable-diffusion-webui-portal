@@ -18,8 +18,8 @@ async function host() {
   watchLivePreviews()
   watchProgress()
 
-  // in case the page is already opened (as during development)
-  void hostRpc.$functions.initPage()
+  // in case the client is already opened (as during development)
+  void hostRpc.$functions.initClient()
 }
 
 host().catch(log)

@@ -4,7 +4,7 @@ import { getExtensionInfo } from "./remote"
 
 export async function insertOpenButtons() {
   const { dir } = await getExtensionInfo()
-  const url = "/file=" + dir + "/client/page.html"
+  const url = "/file=" + dir + "/client/client.html"
 
   ;["txt2img_open_folder", "img2img_open_folder", "extras_open_folder"].forEach((id) => {
     const targetButton = document.getElementById(id)

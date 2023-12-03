@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai"
 import type { FC } from "react"
 import { useEffect, useState } from "react"
-import { pageRpc } from "../page-rpc"
+import { clientRpc } from "../client-rpc"
 import { atoms } from "../store"
 import { Button } from "./ui/Button"
 
@@ -13,7 +13,7 @@ export const Connector: FC = () => {
   const connect = () => {
     setError("")
 
-    pageRpc.initPage().catch((err: unknown) => {
+    clientRpc.initClient().catch((err: unknown) => {
       setError(String(err))
     })
   }

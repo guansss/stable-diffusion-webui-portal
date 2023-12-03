@@ -16,7 +16,7 @@ export default (env: Record<string, string | boolean>, { mode }: { mode: string 
         }
       : {
           "javascript/host": "./src/host/host.ts",
-          "client/client": "./src/page/page.tsx",
+          "client/client": "./src/client/client.tsx",
         },
     output: {
       filename: "[name].js",

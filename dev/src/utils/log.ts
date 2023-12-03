@@ -26,14 +26,8 @@ export function logged() {
       throw new Error("Cannot log function with symbol name")
     }
 
-    let className = "UnknownClass"
-
-    context.addInitializer(function (this: This) {
-      className = (this as Class<unknown>).constructor.name
-    })
-
     return function loggedWrapper(this: This, ...args: Args) {
-      log(`[${className}.${name}]`, ...args)
+      log(`[${name}]`, ...args)
       return target.call(this, ...args)
     }
   }

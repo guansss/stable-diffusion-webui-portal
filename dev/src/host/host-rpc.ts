@@ -1,5 +1,5 @@
 import type { Simplify } from "type-fest"
-import type { PageFunctions } from "../page/page-rpc"
+import type { ClientFunctions } from "../client/client-rpc"
 import { logged } from "../utils/log"
 import { createRpc } from "../utils/rpc"
 import { sendImage, sendLivePreview } from "./image"
@@ -7,7 +7,7 @@ import { sendImage, sendLivePreview } from "./image"
 // using a class since decorators can only be used in classes (currently)
 const hostFunctions = new (class HostRpc {
   @logged()
-  async initPage() {
+  async initClient() {
     await hostRpc.ignoreTimeout.setAtom({
       connected: true,
     })
@@ -19,4 +19,4 @@ const hostFunctions = new (class HostRpc {
 
 export type HostFunctions = Simplify<typeof hostFunctions>
 
-export const hostRpc = createRpc<PageFunctions, HostFunctions>(hostFunctions)
+export const hostRpc = createRpc<ClientFunctions, HostFunctions>(hostFunctions)

@@ -25,9 +25,9 @@ async function main() {
   if (gradioTitle === "Stable Diffusion") {
     log("Loading host")
     import("./host/host").catch(log)
-  } else if (location.pathname.includes("page.html")) {
-    log("Loading page")
-    await import("./page/page")
+  } else if (location.pathname.includes("client.html")) {
+    log("Loading client")
+    await import("./client/client")
   }
 }
 

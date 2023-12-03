@@ -6,12 +6,12 @@ import { log } from "../utils/log"
 import { Connector } from "./components/Connector"
 import { ImageViewer } from "./components/ImageViewer"
 import { Toaster } from "./components/ui/toast"
-import "./page.css"
+import "./client.css"
 import { atoms, store } from "./store"
 
-log("Starting page")
+log("Starting client")
 
-function Page() {
+function Client() {
   const connected = useAtomValue(atoms.connected)
 
   return (
@@ -27,7 +27,7 @@ root.render(
   <StrictMode>
     <Provider store={store}>
       <DevTools store={store} />
-      <Page />
+      <Client />
       <Toaster />
     </Provider>
   </StrictMode>,

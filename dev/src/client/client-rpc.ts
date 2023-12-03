@@ -4,7 +4,7 @@ import { createRpc } from "../utils/rpc"
 import type { AtomArgs } from "./store"
 import { atoms, store } from "./store"
 
-const pageFunctions = new (class PageRpc {
+const clientFunctions = new (class {
   async setAtom<K extends keyof AtomArgs>(values: { [P in K]: AtomArgs[P] }) {
     for (const key in values) {
       if (Object.prototype.hasOwnProperty.call(atoms, key)) {
@@ -14,6 +14,6 @@ const pageFunctions = new (class PageRpc {
   }
 })()
 
-export type PageFunctions = Simplify<typeof pageFunctions>
+export type ClientFunctions = Simplify<typeof clientFunctions>
 
-export const pageRpc = createRpc<HostFunctions, PageFunctions>(pageFunctions)
+export const clientRpc = createRpc<HostFunctions, ClientFunctions>(clientFunctions)
