@@ -26,7 +26,11 @@ export const ImageViewer: FC<ImageViewerProps> = ({ className }) => {
         />
       )}
       {!image && !livePreview && <div className="absolute-center">no image</div>}
-      {progress && <div className="absolute top-0 left-0 shadow-md">{progress.text}</div>}
+      {progress && (
+        <div className="absolute top-0 left-0 font-bold text-white drop-shadow-sm">
+          {progress.text}
+        </div>
+      )}
     </div>
   )
 }
