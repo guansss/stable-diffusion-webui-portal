@@ -66,6 +66,9 @@ export default (env: Record<string, string | boolean>, { mode }: { mode: string 
         overlay: false,
       },
     },
+    optimization: {
+      minimize: false,
+    },
   }
 
   if (isDev) {
