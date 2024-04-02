@@ -58,6 +58,15 @@ export default (env: Record<string, string | boolean>, { mode }: { mode: string 
         },
       ],
     },
+    externals: isDev
+      ? {
+          react: "React@https://unpkg.com/react@18.2.0/umd/react.development.js",
+          "react-dom": "ReactDOM@https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js",
+        }
+      : {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
     resolve: {
       extensions: [".ts", ".tsx", "..."],
     },
