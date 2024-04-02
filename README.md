@@ -13,3 +13,7 @@ https://github.com/guansss/stable-diffusion-webui-portal
 Click the 🖥️ button under image galleries to open the portal page in a new window.
 
 The portal page will show the current image in galleries.
+
+## Development
+
+see [DEVELOPMENT.md](DEVELOPMENT.md)
