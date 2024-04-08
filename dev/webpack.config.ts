@@ -71,6 +71,7 @@ export default (env: Record<string, string | boolean>, { mode }: { mode: string 
       extensions: [".ts", ".tsx", "..."],
     },
     devServer: {
+      static: path.resolve(__dirname, "../client"),
       client: {
         overlay: false,
       },
