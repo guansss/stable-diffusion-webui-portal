@@ -7,7 +7,7 @@ This extension consists of two parts:
 - The host script, which runs in the A1111 webui and interacts with the webui's DOM.
 - The client page, which runs in another window and communicates with the host script.
 
-The cross-window communication is done using the `birpc` library and relies on `postMessage()` under the hood.
+The cross-window communication is done using the _birpc_ library and relies on `BroadcastChannel` under the hood.
 
 ## Prerequisites
 
