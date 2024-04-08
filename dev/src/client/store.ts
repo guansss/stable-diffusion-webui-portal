@@ -1,5 +1,7 @@
 import { atom, createStore } from "jotai"
+import { atomWithStorage } from "jotai/utils"
 import type { ExtractAtomArgs } from "jotai/vanilla"
+import type { ResizeMode } from "../utils/window"
 
 export type SDImage = {
   url: string
@@ -18,6 +20,9 @@ export namespace atoms {
   export const image = atom<SDImage | undefined>(undefined)
   export const livePreview = atom<SDImage | undefined>(undefined)
   export const progress = atom<SDProgress | undefined>(undefined)
+
+  export const imageSize = atom<{ width: number; height: number }>({ width: 0, height: 0 })
+  export const resizeMode = atomWithStorage<ResizeMode>("resizeMode", "fit-image")
 }
 
 Object.entries(atoms).forEach(([name, atom]) => {

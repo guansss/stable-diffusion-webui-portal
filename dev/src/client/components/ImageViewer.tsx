@@ -1,4 +1,4 @@
-import { useAtomValue } from "jotai"
+import { useAtomValue, useSetAtom } from "jotai"
 import { useCallback, type FC } from "react"
 import { watchControls } from "../event"
 import { atoms } from "../store"
@@ -10,6 +10,7 @@ interface ImageViewerProps {
 
 export const ImageViewer: FC<ImageViewerProps> = ({ className }) => {
   const image = useAtomValue(atoms.image)
+  const setImageSize = useSetAtom(atoms.imageSize)
   const livePreview = useAtomValue(atoms.livePreview)
   const progress = useAtomValue(atoms.progress)
 
@@ -22,7 +23,17 @@ export const ImageViewer: FC<ImageViewerProps> = ({ className }) => {
   return (
     <div ref={containerRef} className={cn("relative flex", className)}>
       {image && !livePreview && (
-        <img className="w-full h-full object-contain" src={image.url} alt={image.url} />
+        <img
+          className="w-full h-full object-contain"
+          src={image.url}
+          alt={image.url}
+          onLoad={(e) =>
+            setImageSize({
+              width: e.currentTarget.naturalWidth,
+              height: e.currentTarget.naturalHeight,
+            })
+          }
+        />
       )}
       {livePreview && (
         <img

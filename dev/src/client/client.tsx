@@ -3,6 +3,7 @@ import { DevTools } from "jotai-devtools"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { log } from "../utils/log"
+import { AppMenu } from "./AppMenu"
 import "./client.css"
 import { Connector } from "./components/Connector"
 import { ImageViewer } from "./components/ImageViewer"
@@ -35,6 +36,7 @@ function App() {
     <div className="relative flex w-screen h-screen">
       <Connector />
       {connected && <ImageViewer className="w-full h-full" />}
+      <AppMenu />
     </div>
   )
 }
