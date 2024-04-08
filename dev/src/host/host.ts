@@ -2,8 +2,7 @@ import { log } from "../utils/log"
 import { webuiLoaded } from "../utils/webui"
 import { insertOpenButtons } from "./control"
 import { hostRpc } from "./host-rpc"
-import "./image"
-import { watchImages, watchLivePreviews, watchProgress } from "./image"
+import { watchImages, watchLivePreviews, watchProgress } from "./gallery"
 
 async function host() {
   log("Starting host")

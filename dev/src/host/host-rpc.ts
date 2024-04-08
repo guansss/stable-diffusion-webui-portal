@@ -2,7 +2,7 @@ import type { Simplify } from "type-fest"
 import type { ClientFunctions } from "../client/client-rpc"
 import { logged } from "../utils/log"
 import { createRpc } from "../utils/rpc"
-import { sendImage, sendLivePreview } from "./image"
+import { fireKeyboardEventOnGallery, sendImage, sendLivePreview } from "./gallery"
 
 // using a class since decorators can only be used in classes (currently)
 const hostFunctions = new (class HostRpc {
@@ -14,6 +14,11 @@ const hostFunctions = new (class HostRpc {
 
     await sendImage()
     await sendLivePreview()
+  }
+
+  @logged()
+  async sendKeyboardEvent(type: string, init: KeyboardEventInit) {
+    fireKeyboardEventOnGallery(type, init)
   }
 })()
 

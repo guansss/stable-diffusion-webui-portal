@@ -198,6 +198,23 @@ async function sendProgress(progressText?: HTMLElement) {
     .catch(log)
 }
 
+export function fireKeyboardEventOnGallery(type: string, init: KeyboardEventInit) {
+  if (!currentImageElement) {
+    return
+  }
+
+  const gallery = currentImageElement.closest(".gradio-gallery")
+
+  if (!gallery) {
+    return
+  }
+
+  log("Firing keyboard event", init)
+
+  const event = new KeyboardEvent(type, init)
+  gallery.dispatchEvent(event)
+}
+
 module.hot?.dispose(() => {
   currentImageElement = undefined
   currentLivePreview = undefined

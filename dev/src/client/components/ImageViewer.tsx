@@ -1,5 +1,6 @@
 import { useAtomValue } from "jotai"
-import type { FC } from "react"
+import { useCallback, type FC } from "react"
+import { watchControls } from "../event"
 import { atoms } from "../store"
 import { cn } from "./utils"
 
@@ -12,8 +13,14 @@ export const ImageViewer: FC<ImageViewerProps> = ({ className }) => {
   const livePreview = useAtomValue(atoms.livePreview)
   const progress = useAtomValue(atoms.progress)
 
+  const containerRef = useCallback((element: HTMLDivElement | null) => {
+    if (element) {
+      watchControls(element)
+    }
+  }, [])
+
   return (
-    <div className={cn("relative flex", className)}>
+    <div ref={containerRef} className={cn("relative flex", className)}>
       {image && !livePreview && (
         <img className="w-full h-full object-contain" src={image.url} alt={image.url} />
       )}
