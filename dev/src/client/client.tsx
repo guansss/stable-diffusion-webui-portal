@@ -2,6 +2,7 @@ import { Provider, useAtomValue } from "jotai"
 import { DevTools } from "jotai-devtools"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
+import { DEV } from "../constants"
 import { log } from "../utils/log"
 import { AppMenu } from "./AppMenu"
 import "./client.css"
@@ -13,6 +14,11 @@ import { watchWindowMetrics } from "./window"
 
 function client() {
   log("Starting client")
+
+  if (!DEV && window.__SD_PORTAL_DEV__) {
+    log("Dev mode detected, exiting")
+    return
+  }
 
   if (store.get(atoms.rememberWindowMetrics)) {
     watchWindowMetrics()

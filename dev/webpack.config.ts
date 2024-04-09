@@ -88,6 +88,15 @@ export default (env: Record<string, string | boolean>, { mode }: { mode: string 
         devScript: {
           meta: {
             noframes: true,
+            // TODO: fix case conversion in webpack-monkey
+            "run-at": "document-start",
+          },
+          transform({ content }) {
+            return content.replace(
+              `// ==/UserScript==`,
+              `// ==/UserScript==
+unsafeWindow.__SD_PORTAL_DEV__ = true;`,
+            )
           },
         },
       },

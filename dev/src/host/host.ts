@@ -1,11 +1,17 @@
+import { DEV } from "../constants"
 import { log } from "../utils/log"
 import { webuiLoaded } from "../utils/webui"
 import { insertOpenButtons } from "./control"
-import { hostRpc } from "./host-rpc"
 import { watchImages, watchLivePreviews, watchProgress } from "./gallery"
+import { hostRpc } from "./host-rpc"
 
 async function host() {
   log("Starting host")
+
+  if (!DEV && window.__SD_PORTAL_DEV__) {
+    log("Dev mode detected, exiting")
+    return
+  }
 
   await webuiLoaded
 

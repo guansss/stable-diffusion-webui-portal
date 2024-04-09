@@ -1,23 +1,13 @@
-import { DEV } from "./constants"
 import { log } from "./utils/log"
 
 declare global {
   interface Window {
-    __sd_portal_dev?: boolean
+    __SD_PORTAL_DEV__?: boolean
   }
 }
 
 async function main() {
   log("Starting")
-
-  if (DEV) {
-    unsafeWindow.__sd_portal_dev = true
-  }
-
-  if (!DEV && window.__sd_portal_dev) {
-    log("Dev mode detected, exiting")
-    return
-  }
 
   const gradioTitle = typeof gradio_config === "undefined" ? undefined : gradio_config.title
   log("Title:", gradioTitle)
