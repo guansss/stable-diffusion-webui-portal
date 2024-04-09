@@ -5,8 +5,12 @@ export interface WindowMetrics {
   height: number
 }
 
-export function saveWindowMetrics(metrics: WindowMetrics) {
-  localStorage.setItem("windowMetrics", JSON.stringify(metrics))
+export function saveWindowMetrics(metrics: WindowMetrics | null) {
+  if (metrics) {
+    localStorage.setItem("windowMetrics", JSON.stringify(metrics))
+  } else {
+    localStorage.removeItem("windowMetrics")
+  }
 }
 
 export function getWindowMetrics(): WindowMetrics {

@@ -23,6 +23,12 @@ export namespace atoms {
 
   export const imageSize = atom<{ width: number; height: number }>({ width: 0, height: 0 })
   export const resizeMode = atomWithStorage<ResizeMode>("resizeMode", "fit-image")
+
+  export const rememberWindowMetrics = atomWithStorage("rememberWindowMetrics", true, undefined, {
+    // we are reading this atom before creating the React app, so if getOnInit is false,
+    // we will not get the stored value
+    unstable_getOnInit: true,
+  })
 }
 
 Object.entries(atoms).forEach(([name, atom]) => {

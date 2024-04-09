@@ -24,7 +24,7 @@ const hostFunctions = new (class HostRpc {
   }
 
   @logged()
-  saveWindowMetrics(metrics: WindowMetrics) {
+  saveWindowMetrics(metrics: WindowMetrics | null) {
     saveWindowMetrics(metrics)
   }
 })()
