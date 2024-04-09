@@ -10,6 +10,7 @@ import { Connector } from "./components/Connector"
 import { ImageViewer } from "./components/ImageViewer"
 import { Toaster } from "./components/ui/toast"
 import { atoms, store } from "./store"
+import { applyTheme } from "./theme"
 import { watchWindowMetrics } from "./window"
 
 function client() {
@@ -19,6 +20,8 @@ function client() {
     log("Dev mode detected, exiting")
     return
   }
+
+  applyTheme(store.get(atoms.theme))
 
   if (store.get(atoms.rememberWindowMetrics)) {
     watchWindowMetrics()

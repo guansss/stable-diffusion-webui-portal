@@ -3,6 +3,7 @@ import { useAtom } from "jotai"
 import { useId } from "react"
 import type { ResizeMode } from "../../utils/window"
 import { atoms } from "../store"
+import { applyTheme, type Theme } from "../theme"
 import { stopWatchingWindowMetrics, watchWindowMetrics } from "../window"
 import { Checkbox } from "./ui/Checkbox"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
@@ -13,6 +14,12 @@ interface SettingsProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
+
+const themeOptions = {
+  light: { label: "Light" },
+  dark: { label: "Dark" },
+  system: { label: "System" },
+} satisfies Record<Theme, unknown>
 
 export const resizeModeOptions = {
   "fit-image": {
@@ -32,11 +39,18 @@ export const resizeModeOptions = {
 } satisfies Record<ResizeMode, unknown>
 
 export function Settings({ open, onOpenChange }: SettingsProps) {
+  const [theme, setTheme] = useAtom(atoms.theme)
   const [resizeMode, setResizeMode] = useAtom(atoms.resizeMode)
   const [rememberWindowMetrics, setRememberWindowMetrics] = useAtom(atoms.rememberWindowMetrics)
 
+  const themeId = useId()
   const resizeModeId = useId()
   const rememberWindowMetricsId = useId()
+
+  const updateTheme = (theme: Theme) => {
+    setTheme(theme)
+    applyTheme(theme)
+  }
 
   const updateRememberWindowMetrics = (enabled: boolean) => {
     setRememberWindowMetrics(enabled)
@@ -56,6 +70,22 @@ export function Settings({ open, onOpenChange }: SettingsProps) {
           <DialogDescription>Changes will be automatically saved.</DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-[max-content,auto] items-center gap-4 py-4">
+          <Label htmlFor={themeId} className="text-right">
+            Theme
+          </Label>
+          <Select value={theme} onValueChange={(v) => updateTheme(v as keyof typeof themeOptions)}>
+            <SelectTrigger id={themeId}>
+              <SelectValue>{themeOptions[theme]?.label}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(themeOptions).map(([value, { label }]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
           <Label htmlFor={resizeModeId} className="text-right">
             Resize window
           </Label>

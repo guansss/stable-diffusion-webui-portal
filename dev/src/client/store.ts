@@ -2,6 +2,7 @@ import { atom, createStore } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 import type { ExtractAtomArgs } from "jotai/vanilla"
 import type { ResizeMode } from "../utils/window"
+import type { Theme } from "./theme"
 
 export type SDImage = {
   url: string
@@ -27,6 +28,10 @@ export namespace atoms {
   export const rememberWindowMetrics = atomWithStorage("rememberWindowMetrics", true, undefined, {
     // we are reading this atom before creating the React app, so if getOnInit is false,
     // we will not get the stored value
+    unstable_getOnInit: true,
+  })
+
+  export const theme = atomWithStorage<Theme>("theme", "system", undefined, {
     unstable_getOnInit: true,
   })
 }
