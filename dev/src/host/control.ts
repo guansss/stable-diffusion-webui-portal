@@ -1,6 +1,7 @@
 import { uniqueId } from "lodash-es"
 import { log } from "../utils/log"
 import { getExtensionInfo } from "./remote"
+import { getWindowMetrics } from "./window"
 
 export async function insertOpenButtons() {
   const { dir } = await getExtensionInfo()
@@ -38,8 +39,13 @@ function insertOpenButton(targetButton: HTMLElement, url: string) {
     e.preventDefault()
     e.stopPropagation()
 
-    // TODO: remember position and size
-    window.open(openButton.href, openButton.target, "width=800,height=600")
+    const { x, y, width, height } = getWindowMetrics()
+
+    window.open(
+      openButton.href,
+      openButton.target,
+      `width=${width},height=${height},screenX=${x},screenY=${y}`,
+    )
   })
 
   log("Created open button", openButton)

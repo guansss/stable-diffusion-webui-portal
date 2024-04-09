@@ -3,6 +3,8 @@ import type { ClientFunctions } from "../client/client-rpc"
 import { logged } from "../utils/log"
 import { createRpc } from "../utils/rpc"
 import { fireKeyboardEventOnGallery, sendImage, sendLivePreview } from "./gallery"
+import type { WindowMetrics } from "./window"
+import { saveWindowMetrics } from "./window"
 
 // using a class since decorators can only be used in classes (currently)
 const hostFunctions = new (class HostRpc {
@@ -19,6 +21,11 @@ const hostFunctions = new (class HostRpc {
   @logged()
   async sendKeyboardEvent(type: string, init: KeyboardEventInit) {
     fireKeyboardEventOnGallery(type, init)
+  }
+
+  @logged()
+  saveWindowMetrics(metrics: WindowMetrics) {
+    saveWindowMetrics(metrics)
   }
 })()
 
