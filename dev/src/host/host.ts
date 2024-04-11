@@ -8,12 +8,12 @@ import { hostRpc } from "./host-rpc"
 async function host() {
   log("Starting host")
 
+  await webuiLoaded
+
   if (!DEV && window.__SD_PORTAL_DEV__) {
     log("Dev mode detected, exiting")
     return
   }
-
-  await webuiLoaded
 
   log("WebUI loaded")
 
