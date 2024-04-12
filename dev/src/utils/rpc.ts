@@ -1,7 +1,8 @@
 import { createBirpc, type BirpcOptions, type BirpcReturn } from "birpc"
 import { isBirpcTimeoutError } from "./error"
+import { DEV } from "../constants"
 
-const channel = new BroadcastChannel("sd-portal-channel")
+const channel = new BroadcastChannel(DEV ? "sd-portal-channel-dev" : "sd-portal-channel")
 
 type Rpc<T, U> = BirpcReturn<T, U> & {
   $: (options: RpcOptions) => BirpcReturn<T, U>
