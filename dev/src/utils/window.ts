@@ -8,19 +8,26 @@ export function resizeWindow(mode: ResizeMode, imageWidth: number, imageHeight: 
     return
   }
 
+  // On Windows, outerWidth and outerHeight include the size of the window's shadow,
+  // which is likely 8px per side, so it's impossible to resize the window to
+  // visually fit the screen without leaving gaps. Not sure about other OSes.
+  // See https://stackoverflow.com/questions/77641874
+  const frameWidth = window.outerWidth - window.innerWidth
+  const frameHeight = window.outerHeight - window.innerHeight
+
   if (mode === "fit-image") {
-    width = imageWidth
-    height = imageHeight
+    width = imageWidth + frameWidth
+    height = imageHeight + frameHeight
   } else if (mode === "screen-width") {
     width = window.screen.availWidth
-    height = (window.screen.availWidth / imageWidth) * imageHeight
+    height = (imageHeight / imageWidth) * (width - frameWidth) + frameHeight
   } else if (mode === "screen-height") {
     height = window.screen.availHeight
-    width = (window.screen.availHeight / imageHeight) * imageWidth
+    width = (imageWidth / imageHeight) * (height - frameHeight) + frameWidth
   }
 
-  width = Math.max(100, ~~width)
-  height = Math.max(100, ~~height)
+  width = Math.max(200, Math.round(width))
+  height = Math.max(300, Math.round(height))
 
   window.resizeTo(width, height)
 }
