@@ -1,6 +1,7 @@
 import { useAtomValue } from "jotai"
 import type { FC } from "react"
 import { useEffect, useState } from "react"
+import { formatError, isBirpcTimeoutError } from "../../utils/error"
 import { clientRpc } from "../client-rpc"
 import { atoms } from "../store"
 import { Button } from "./ui/Button"
@@ -10,16 +11,22 @@ export const Connector: FC = () => {
 
   const [error, setError] = useState("")
 
-  const connect = () => {
+  const connect = async () => {
     setError("")
 
-    clientRpc.initClient().catch((err: unknown) => {
-      setError(String(err))
-    })
+    try {
+      await clientRpc.initClient()
+    } catch (e) {
+      if (isBirpcTimeoutError(e)) {
+        setError("Connection timed out.")
+      } else {
+        setError(formatError(e))
+      }
+    }
   }
 
   useEffect(() => {
-    connect()
+    void connect()
   }, [])
 
   if (connected) return null
@@ -29,9 +36,9 @@ export const Connector: FC = () => {
       {!error && <div className="absolute-center">Connecting...</div>}
       {error && (
         <div className="absolute-center">
-          <h2 className="text-lg text-red-500">Error: could not connect to host</h2>
-          <p>{error}</p>
-          <Button className="mt-4" onClick={connect}>
+          <h2 className="text-lg font-bold">Could not connect to host</h2>
+          <p className="text-red-500">{error}</p>
+          <Button className="mt-4" onClick={() => void connect()}>
             Retry
           </Button>
         </div>

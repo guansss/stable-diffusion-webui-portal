@@ -1,3 +1,27 @@
+export function formatError(e: unknown, fallback = "unknown error"): string {
+  let result = fallback
+
+  if (typeof e === "string") {
+    result = e
+  } else if (e !== null && typeof e === "object") {
+    if ((e as Error).message) {
+      result = String((e as Error).message)
+    } else {
+      const str = String(e)
+
+      if (str !== "[object Object]") {
+        result = str
+      }
+    }
+  }
+
+  if (result.length > 1000) {
+    result = result.slice(0, 1000) + `... (${result.length - 1000} more)`
+  }
+
+  return result || fallback
+}
+
 export function ignoreError(test: string | ((e: unknown) => boolean)) {
   return function ignoreErrorDecorator<This, Args extends unknown[]>(
     target: (this: This, ...args: Args) => void | Promise<void>,
