@@ -21,7 +21,7 @@ export const ImageViewer: FC<ImageViewerProps> = ({ className }) => {
   }, [])
 
   return (
-    <div ref={containerRef} className={cn("relative flex", className)}>
+    <div ref={containerRef} className={cn("relative flex", className)} tabIndex={0}>
       {image && !livePreview && (
         <img
           className="w-full h-full object-contain"
